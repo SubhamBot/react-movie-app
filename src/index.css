@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+    @apply bg-gray-500 text-gray-900;
+  }
+  
+  /* Dark Mode */
+  div.dark {
+    @apply bg-gray-900 text-white;
+  }
+  div.dark.cards{
+    @apply bg-blue-950;
+  }
+  header.dark {
+    @apply bg-blue-950;
+  }
