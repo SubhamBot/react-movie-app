@@ -10,6 +10,10 @@ interface HomePageProps {
 
 function HomePage({ filters, searchQuery }: HomePageProps) {
   const TMDB_BEARER_TOKEN = import.meta.env.VITE_TMDB_BEARER_TOKEN;
+  const TMDB_API_BASE = import.meta.env.VITE_TMDB_API_BASE;
+  const TMDB_SEARCH_MOVIE = import.meta.env.VITE_TMDB_SEARCH_MOVIE;
+  const TMDB_DISCOVER_MOVIE = import.meta.env.VITE_TMDB_DISCOVER_MOVIE;
+
   const [movies, setMovies] = useState<Movie[]>([]);
   const [favorites, setFavorites] = useState<Movie[]>([]);
   const [page, setPage] = useState(1);
@@ -35,12 +39,8 @@ function HomePage({ filters, searchQuery }: HomePageProps) {
         abortControllerRef.current.abort();
       }
       abortControllerRef.current = new AbortController();
-      let url;
-      if (searchQuery) {
-        url = `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=${currentPage}`;
-      } else {
-        url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${currentPage}&sort_by=popularity.desc`;
-      }
+
+      let url = `${TMDB_API_BASE}${searchQuery ? TMDB_SEARCH_MOVIE : TMDB_DISCOVER_MOVIE}?include_adult=false&language=en-US&page=${currentPage}`;
 
       const apiFilters = [];
 
@@ -92,7 +92,7 @@ function HomePage({ filters, searchQuery }: HomePageProps) {
         abortControllerRef.current.abort();
       }
     };
-  }, [TMDB_BEARER_TOKEN, filters, page, searchQuery]);
+  }, [TMDB_API_BASE, TMDB_SEARCH_MOVIE, TMDB_DISCOVER_MOVIE, TMDB_BEARER_TOKEN, filters, page, searchQuery]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -123,7 +123,7 @@ function HomePage({ filters, searchQuery }: HomePageProps) {
   };
 
   return (
-    <div id="1" className="min-h-screen bg-gray-100  dark:bg-gray-900 text-gray-900 dark:text-white p-4 md:p-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <p className="mb-4 text-gray-600">{movies.length} movies loaded</p>
 
@@ -147,5 +147,3 @@ function HomePage({ filters, searchQuery }: HomePageProps) {
 }
 
 export default HomePage;
-
-

@@ -21,8 +21,6 @@ function FavoritesPage() {
     const updatedFavorites = favorites.filter((fav) => fav.id !== movie.id);
     setFavorites(updatedFavorites);
     localStorage.setItem("movie_app_favorites", JSON.stringify(updatedFavorites));
-
-    // Notify HomePage and other components
     window.dispatchEvent(new Event("storage"));
   };
 

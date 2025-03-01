@@ -1,17 +1,15 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Filter, Search, X, Heart } from "lucide-react";
 import { FiltersType } from "../types/FilterType";
 import logo from "./Logo.png"; 
 import DarkMode from "./DarkMode";
-import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   filters: FiltersType;
   setFilters: Dispatch<SetStateAction<FiltersType>>;
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
-  
 }
 
 const Header = ({ filters, setFilters, searchQuery, setSearchQuery }: HeaderProps) => {
@@ -38,7 +36,6 @@ const Header = ({ filters, setFilters, searchQuery, setSearchQuery }: HeaderProp
   }, [TMDB_BEARER_TOKEN]);
 
   useEffect(() => {
-    console.log(5)
     const handler = setTimeout(() => {
       setSearchQuery(debouncedQuery);
     }, 500);
@@ -51,20 +48,34 @@ const Header = ({ filters, setFilters, searchQuery, setSearchQuery }: HeaderProp
   };
 
   return (
-    <header id="2" className="bg-white shadow-sm p-4 sticky top-0 z-50">
-      <div className="max-w-7xl mx-20 flex items-center justify-between">
-        {/* Logo Image */}
-        <img src={logo} alt="Popcorn Logo" className="h-28 w-28 md:h-12 md:w-12 object-contain bg-none"/>
-        <h1 className="text-lg md:text-2xl px-0 font-bold text-yellow-500">
-          <Link to="/">Popcorn Grinder</Link>
-        </h1>
+    <header className="bg-white shadow-sm p-3 md:p-4 sticky top-0 z-50 dark:bg-gray-900 dark:text-white w-full">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between">
+        
+        <div className="w-full flex justify-between items-center md:w-auto">
+          <div className="flex items-center gap-2">
+            <img src={logo} alt="Popcorn Logo" className="h-12 w-12 md:h-16 md:w-16 object-contain" />
+            <h1 className="text-lg md:text-2xl font-bold text-yellow-500">
+              <Link to="/">Popcorn Grinder</Link>
+            </h1>
+          </div>
+          
+          <div className="flex items-center gap-3 md:hidden">
+            <Link to="/favorites" className="p-2 text-gray-600 hover:text-yellow-500 transition">
+              <Heart className="h-5 w-5" />
+            </Link>
+            <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-gray-600 hover:text-yellow-500 transition">
+              <Filter className="h-5 w-5" />
+            </button>
+            <DarkMode />
+          </div>
+        </div>
 
-        {/* Search Input */}
-        <div className="relative flex-1 min-w-[300px] w-full px-3 md:order-none order-last">
+        {/* Search Bar */}
+        <div className="relative w-full mt-3 md:mt-0 md:w-auto flex-1 min-w-0 px-3">
           <input
             type="text"
             placeholder="Search movies..."
-            value={debouncedQuery}
+            value={searchQuery}
             onFocus={() => navigate("/")}
             onChange={(e) => setDebouncedQuery(e.target.value)}
             className="w-full p-3 pl-10 pr-10 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -77,22 +88,22 @@ const Header = ({ filters, setFilters, searchQuery, setSearchQuery }: HeaderProp
           )}
         </div>
 
-        {/* Favorites & Filter Buttons */}
-        <div className="flex items-center gap-4">
-          <Link to="/favorites" className="relative p-2 text-gray-600 hover:text-yellow-500 transition">
-            <Heart className="h-5 w-5" />
-            
+        
+        <div className="hidden md:flex items-center gap-3">
+          <Link to="/favorites" className="p-2 text-gray-600 hover:text-yellow-500 transition">
+            <Heart className="h-6 w-6" />
           </Link>
           <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-gray-600 hover:text-yellow-500 transition">
-            <Filter className="h-5 w-5" />
+            <Filter className="h-6 w-6" />
           </button>
           <DarkMode />
         </div>
       </div>
 
-      {/* Filters Panel (Appears Below Header, Smaller Size) */}
+      {/* Filters Panel */}
       {isOpen && (
-        <div className="fixed md:absolute left-0 md:left-auto right-0 md:right-1 top-0 md:top-auto mt-0 md:mt-2 w-full md:w-[30rem] h-screen md:h-auto p-2 bg-white md:rounded-lg shadow-xl border-l md:border border-gray-200 z-50 flex flex-col">
+        <div className="absolute right-0 top-full mt-2 w-full md:w-[30rem] max-h-[60vh] overflow-y-auto p-2 dark:bg-gray-800 bg-white rounded-lg shadow-xl border border-gray-200 z-50 flex flex-col scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-400 md:scrollbar-none">
+
           <h3 className="text-lg font-semibold mb-2">Filters</h3>
           <div className="space-y-4">
             <div>
@@ -158,9 +169,6 @@ const Header = ({ filters, setFilters, searchQuery, setSearchQuery }: HeaderProp
           </div>
           <button onClick={clearFilters} className="mt-4 w-full bg-red-500 text-white p-2 rounded">
             Clear Filters
-          </button>
-          <button onClick={() => setIsOpen(false)} className="mt-2 w-full bg-gray-300 p-2 rounded">
-            Close
           </button>
         </div>
       )}
